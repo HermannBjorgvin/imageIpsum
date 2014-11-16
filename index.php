@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<title>imageIpsum</title>
 <?php
 
 	require('imageIpsum.php');

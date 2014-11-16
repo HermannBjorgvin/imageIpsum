@@ -15,6 +15,12 @@
 		private $originalImageDirectory = '';
 		private $duplicateImageDirectory = '';
 
+		// Initializer class
+		function imageIpsum($originals, $duplicates){
+			$this->originalImageDirectory = $originals;
+			$this->duplicateImageDirectory = $duplicates;
+		}
+
 		private function getOriginalFiles()
 		{
 			$orgDirFiles = scandir($this->originalImageDirectory);
@@ -22,11 +28,6 @@
 			unset($orgDirFiles[1]);
 
 			return $orgDirFiles;
-		}
-
-		function imageIpsum($originals, $duplicates){
-			$this->originalImageDirectory = $originals;
-			$this->duplicateImageDirectory = $duplicates;
 		}
 
 		public function test(){
