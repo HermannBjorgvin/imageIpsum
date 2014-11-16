@@ -1,0 +1,12 @@
+Image ipsum - PhP library for generating images of a specific resolution for placeholder purposes
+
+Class imageIpsum {}
+
+functions
+	find image in directory with best matching ratio
+	resize and crop image to fit size
+	dump that image in a directory
+
+	list images in directory
+	check if image has been generated before (less cpu expensive than generating a new one each time)
+
