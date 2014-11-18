@@ -1,8 +1,6 @@
 <?php
 
 	/*
-	* To do:
-	* Map reduce all the images already available in JSON
 	* 
 	* 
 	*/
@@ -11,16 +9,19 @@
 	{
 		private $originalImageDirectory = ''; // folder to store the original images
 		private $duplicateImageDirectory = ''; // folder to store all the images we generate
-		private $imageNameAddon = 'Ballmer.jpg'; // folder where to store JSON map for images
+		private $imageNameAddon = '.jpg'; // What to add on to the end of the filename
 
 		// Initializer function
-		function imageIpsum($originals, $duplicates){
+		function imageIpsum($originals, $duplicates, $customStringFilename)
+		{
 			$this->originalImageDirectory = $originals;
 			$this->duplicateImageDirectory = $duplicates;
+			$this->imageNameAddon = $customStringFilename.$this->imageNameAddon;
 		}
 
 		// Main function for serving images, returns something, idk yet
-		public function serve($width, $height){
+		public function serve($width, $height)
+		{
 			$imageExists = $this->checkImageExistance($width, $height);
 
 			if (!$imageExists) {
@@ -34,19 +35,9 @@
 			}
 		}
 
-		// Test the directories and list all the original images
-		public function test(){
-			echo $this->originalImageDirectory.'<br>';
-			echo $this->duplicateImageDirectory.'<br>';
-
-			$files = $this->getOriginalFiles();
-			foreach ($files as $file) {
-				echo '<br>'.json_encode($file);
-			}
-		}
-
 		// Find the image with the best matching aspect ratio
-		private function findBestAspectRatio($width, $height){
+		private function findBestAspectRatio($width, $height)
+		{
 			// Fetch all the original images
 			$images = $this->getOriginalFiles();
 
@@ -57,11 +48,20 @@
 			$sImage = array();
 
 			foreach ($images as $image) {
-				if (// if the aspect ratio matches better than the selected image
+				if // if the aspect ratio matches better than the selected image
+				(
 					empty($sImage) ||
-					abs($image['x']/$image['y'] - $ratio) < 
-					abs($sImage['x']/$sImage['y'] - $ratio)
-				) {
+					(
+						(
+							abs($image['x']/$image['y'] - $ratio) <
+							abs($sImage['x']/$sImage['y'] - $ratio)
+						) ||
+						abs(
+							abs($image['x']/$image['y'] - $ratio) - abs($sImage['x']/$sImage['y'] - $ratio)
+						) < 0.035
+					)
+				) 
+				{
 					$sImage = $image;
 				}
 			}
@@ -93,6 +93,7 @@
 				$imagesInfo[] = $tempArr;
 			}
 
+			shuffle($imagesInfo);
 			return $imagesInfo;
 		}
 
@@ -109,7 +110,9 @@
 			return $orgDirFiles;
 		}
 
-		private function checkImageExistance($width, $height){
+		// So we're not wasting our time generating a million of these
+		private function checkImageExistance($width, $height)
+		{
 			$images = $this->getDuplicateFiles();
 			foreach ($images as $image) {
 				if ($image == ($width.'x'.$height.$this->imageNameAddon)) {
