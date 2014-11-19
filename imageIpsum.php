@@ -3,6 +3,7 @@
 	/*
 	* 
 	* 
+	* 
 	*/
 
 	class imageIpsum
@@ -33,6 +34,8 @@
 					1
 				);
 			}
+
+			return $this->duplicateImageDirectory.$width.'x'.$height.$this->imageNameAddon;
 		}
 
 		// Find the image with the best matching aspect ratio
